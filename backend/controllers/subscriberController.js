@@ -1,4 +1,5 @@
 import subscriberModel from '../models/subscriberModel.js'
+import mongoose from 'mongoose'
 import validator from 'validator'
 
 const addSubscriber = async (req, res) => {
@@ -21,6 +22,9 @@ const addSubscriber = async (req, res) => {
 
 const listSubscribers = async (req, res) => {
   try {
+    if (mongoose.connection.readyState !== 1) {
+      return res.json({ success: false, message: 'Database not connected' })
+    }
     const subscribers = await subscriberModel.find({}).sort({ date: -1 })
     res.json({ success: true, subscribers })
   } catch (error) {
